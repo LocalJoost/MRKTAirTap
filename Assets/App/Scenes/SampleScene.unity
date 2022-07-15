@@ -353,6 +353,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+--- !u!1 &956646324 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2351505567455720334, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+  m_PrefabInstance: {fileID: 956646323}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &956646325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 956646324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a4bc660e51145d0ac8a8705ae5a0dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  environment: 2
 --- !u!1 &1085718555
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,6 +459,7 @@ GameObject:
   - component: {fileID: 1475865149}
   - component: {fileID: 1475865148}
   - component: {fileID: 1475865150}
+  - component: {fileID: 1475865151}
   m_Layer: 0
   m_Name: HandDisplayer
   m_TagString: Untagged
@@ -521,13 +540,29 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1475865146}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd067ef591de3c74f834a292637dd18a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   leftHand: {fileID: 1547902908}
   rightHand: {fileID: 2073986279}
+--- !u!114 &1475865151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475865146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92bb2ae899c14004ea45a902ddb39d2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftHand: {fileID: 1547902908}
+  rightHand: {fileID: 2073986279}
+  leftHandReference: {fileID: -294446728694031702, guid: 18c412191cdc9274897f101c7fd5316f, type: 3}
+  rightHandReference: {fileID: 2995356199736570127, guid: 18c412191cdc9274897f101c7fd5316f, type: 3}
 --- !u!1001 &1547902906
 PrefabInstance:
   m_ObjectHideFlags: 0
