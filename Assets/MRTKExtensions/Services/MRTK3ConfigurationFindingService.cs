@@ -2,7 +2,7 @@ using MRTKExtensions.Services.Interfaces;
 using RealityCollective.ServiceFramework.Services;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
-using RealityCollective.ServiceFramework.Definitions;
+using Microsoft.MixedReality.Toolkit.Subsystems;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,28 +11,42 @@ namespace MRTKExtensions.Services
     [System.Runtime.InteropServices.Guid("dd1c8edc-335b-4510-872a-ced01fca424a")]
     public class MRTK3ConfigurationFindingService : BaseServiceWithConstructor, IMRTK3ConfigurationFindingService
     {
-        public MRTK3ConfigurationFindingService(string name, uint priority, BaseProfile profile)
+        public MRTK3ConfigurationFindingService(string name, uint priority, MRTK3ConfigurationFindingServiceProfile profile)
             : base(name, priority)
         {
         }
+        
+        public ControllerLookup ControllerLookup => controllerLookup;
 
+        private bool leftHandTriggerStatus = false;
+        private bool rightHandTriggerStatus = false;
+
+        private HandsAggregatorSubsystem handsAggregatorSubsystem;
+        
+        public ArticulatedHandController LeftHand => (ArticulatedHandController)controllerLookup.LeftHandController;
+        public ArticulatedHandController RightHand => (ArticulatedHandController)controllerLookup.RightHandController;
+
+        private const float PinchTreshold = 0.95f;
+        
+        /// <inheritdoc />
+        public override void Initialize()
+        {
+        }
+
+        /// <inheritdoc />
         public override void Start()
         {
             GetHandControllerLookup();
+            handsAggregatorSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
         }
 
-        #region Nicked from Solver
-
         private ControllerLookup controllerLookup;
-
-        public ControllerLookup ControllerLookup => controllerLookup;
 
         private void GetHandControllerLookup()
         {
             if (controllerLookup == null)
             {
-                ControllerLookup[] lookups =
-                    GameObject.FindObjectsOfType(typeof(ControllerLookup)) as ControllerLookup[];
+                ControllerLookup[] lookups = GameObject.FindObjectsOfType(typeof(ControllerLookup)) as ControllerLookup[];
                 if (lookups.Length == 0)
                 {
                     Debug.LogError(
@@ -51,42 +65,74 @@ namespace MRTKExtensions.Services
             }
         }
 
-        #endregion
-
-
-
-        public ArticulatedHandController LeftHand => 
-            (ArticulatedHandController)controllerLookup.LeftHandController;
-        public ArticulatedHandController RightHand => 
-            (ArticulatedHandController)controllerLookup.RightHandController;
-
+        public UnityEvent<bool> LeftHandStatusTriggered { get; }= new UnityEvent<bool>();
         
-        private bool leftHandTriggerStatus;
-        private bool rightHandTriggerStatus;
-        
-        public UnityEvent<bool> LeftHandStatusTriggered { get; } = new UnityEvent<bool>();
-        public UnityEvent<bool> RightHandStatusTriggered { get; } = new UnityEvent<bool>();
+        public UnityEvent<bool> RightHandStatusTriggered { get; }= new UnityEvent<bool>();
 
+        /// <inheritdoc />
         public override void Update()
         {
+            if (!TryUpdateByTrigger())
+            {
+                TryUpdateByPinch();
+            }
+        }
+        
+        private bool TryUpdateByTrigger()
+        {
+            var triggeredByTrigger = false;
             var newStatus = GetIsTriggered(LeftHand);
-            if (newStatus != leftHandTriggerStatus)
+            if (newStatus != leftHandTriggerStatus && LeftHand)
             {
                 leftHandTriggerStatus = newStatus;
                 LeftHandStatusTriggered.Invoke(leftHandTriggerStatus);
+                triggeredByTrigger = true;
             }
-
+            
             newStatus = GetIsTriggered(RightHand);
             if (newStatus != rightHandTriggerStatus)
             {
                 rightHandTriggerStatus = newStatus;
                 RightHandStatusTriggered.Invoke(rightHandTriggerStatus);
+                triggeredByTrigger = true;
+            }
+
+            return triggeredByTrigger;
+        }
+        
+        private bool GetIsTriggered(ArticulatedHandController hand)
+        {
+            return hand.currentControllerState.selectInteractionState.value > PinchTreshold;
+        }
+
+        private void TryUpdateByPinch()
+        {
+            if (handsAggregatorSubsystem != null)
+            {
+                var newStatus = TryUpdateByPinch(LeftHand);
+                if (newStatus != leftHandTriggerStatus)
+                {
+                    leftHandTriggerStatus = newStatus;
+                    LeftHandStatusTriggered.Invoke(leftHandTriggerStatus);
+                }
+            
+                newStatus = TryUpdateByPinch(RightHand);
+                if (newStatus != rightHandTriggerStatus)
+                {
+                    rightHandTriggerStatus = newStatus;
+                    RightHandStatusTriggered.Invoke(rightHandTriggerStatus);    
+                }
             }
         }
 
-        private bool GetIsTriggered(ArticulatedHandController hand)
+        private bool TryUpdateByPinch(ArticulatedHandController handController)
         {
-            return hand.currentControllerState.selectInteractionState.value > 0.95f;
+            var progressDetectable = 
+                handsAggregatorSubsystem.TryGetPinchProgress(handController.HandNode,
+                                                             out bool isReadyToPinch, 
+                                                             out bool isPinching, 
+                                                             out float pinchAmount);
+            return progressDetectable && isPinching && pinchAmount > PinchTreshold;
         }
     }
 }
