@@ -20,8 +20,8 @@ MonoBehaviour:
     profile: {fileID: 0}
     platformEntries:
       runtimePlatforms:
-      - reference: 5a504905-0968-4b2f-a537-7fe804f1bd8e
       - reference: 16a3125f-31d5-4ec6-a120-8be889a74d27
       - reference: e0d70d45-a52a-4b03-bcdf-8fe367555516
-  initializeOnPlay: 0
+      - reference: 3dfb96a6-7f67-4f83-835b-32725bc0a2c0
+  initializeOnPlay: 1
   doNotDestroyServiceManagerOnLoad: 1

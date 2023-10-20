@@ -1,8 +1,8 @@
 using MRTKExtensions.Services.Interfaces;
 using RealityCollective.ServiceFramework.Services;
-using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.Input;
-using Microsoft.MixedReality.Toolkit.Subsystems;
+using MixedReality.Toolkit;
+using MixedReality.Toolkit.Input;
+using MixedReality.Toolkit.Subsystems;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -65,9 +65,9 @@ namespace MRTKExtensions.Services
             }
         }
 
-        public UnityEvent<bool> LeftHandStatusTriggered { get; }= new UnityEvent<bool>();
+        public UnityEvent<bool> LeftHandStatusTriggered { get; }= new();
         
-        public UnityEvent<bool> RightHandStatusTriggered { get; }= new UnityEvent<bool>();
+        public UnityEvent<bool> RightHandStatusTriggered { get; }= new();
 
         /// <inheritdoc />
         public override void Update()
