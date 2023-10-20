@@ -18,11 +18,11 @@ public class AirTapDisplayer : MonoBehaviour
     TextMeshPro textMesh;
     
     private IMRTK3ConfigurationFindingService findingService;
-    private HandsAggregatorSubsystem handsAggregatorSubsystem;
+    private IHandsAggregatorSubsystem handsAggregatorSubsystem;
 
     private void Start()
     {
-        handsAggregatorSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
+        handsAggregatorSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<IHandsAggregatorSubsystem>();
         leftHand.SetActive(false);
         rightHand.SetActive(false);
         

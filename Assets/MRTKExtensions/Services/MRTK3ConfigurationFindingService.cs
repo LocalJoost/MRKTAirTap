@@ -21,7 +21,7 @@ namespace MRTKExtensions.Services
         private bool leftHandTriggerStatus = false;
         private bool rightHandTriggerStatus = false;
 
-        private HandsAggregatorSubsystem handsAggregatorSubsystem;
+        private IHandsAggregatorSubsystem handsAggregatorSubsystem;
         
         public ArticulatedHandController LeftHand => (ArticulatedHandController)controllerLookup.LeftHandController;
         public ArticulatedHandController RightHand => (ArticulatedHandController)controllerLookup.RightHandController;
@@ -37,7 +37,7 @@ namespace MRTKExtensions.Services
         public override void Start()
         {
             GetHandControllerLookup();
-            handsAggregatorSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
+            handsAggregatorSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<IHandsAggregatorSubsystem>();
         }
 
         private ControllerLookup controllerLookup;
