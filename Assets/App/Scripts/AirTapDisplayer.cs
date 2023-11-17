@@ -26,8 +26,6 @@ public class AirTapDisplayer : MonoBehaviour
         handsAggregatorSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<IHandsAggregatorSubsystem>();
         leftHand.SetActive(false);
         rightHand.SetActive(false);
-
-        
         findingService = ServiceManager.Instance.GetService<IMRTK3ConfigurationFindingService>();
         
         var rightLineRenderer = findingService.RightHand.gameObject.GetComponentInChildren<LineRenderer>(true);
